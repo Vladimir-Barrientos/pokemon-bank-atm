@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokemon Bank - Historial</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-9">
+
+        <div class="pantalla-atm">
+
+          <div class="encabezado-banco">
+            <h1>Pokemon Bank</h1>
+          </div>
+
+          <h4 class="text-center mb-4">Historial de transacciones</h4>
+
+          <!-- Tabla donde se van a pintar todas las transacciones
+               guardadas en localStorage -->
+          <div class="table-responsive">
+            <table class="table table-bordered tabla-historial">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Tipo</th>
+                  <th>Descripcion</th>
+                  <th>Monto</th>
+                </tr>
+              </thead>
+              <!-- Aqui el JS va a meter las filas (tr) una por una -->
+              <tbody id="cuerpoTablaHistorial">
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mensaje que aparece solo si no hay transacciones todavia -->
+          <p id="mensajeSinDatos" class="text-center text-muted" style="display:none;">
+            Todavia no hay transacciones registradas.
+          </p>
+
+          <div class="d-flex justify-content-between mt-4">
+            <a href="acciones.html" class="btn btn-outline-primary">Volver</a>
+            <button id="btnDescargarPdf" class="btn btn-amarillo">Descargar PDF</button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LIBRERIAS (JS) ============ -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- jsPDF: lo usamos para generar un PDF con el historial -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script src="js/data.js"></script>
+  <script src="js/historial.js"></script>
+
+</body>
+</html>
