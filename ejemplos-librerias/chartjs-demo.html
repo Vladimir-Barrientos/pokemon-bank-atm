@@ -9,31 +9,31 @@
 <body class="p-5">
 
   <!--
-    Ejemplo suelto de Chart.js. Esta libreria sirve para dibujar
-    graficas (pastel, barras, lineas, etc). En la app principal
-    la usamos en grafico.html para mostrar el analisis de
+    Ejemplo suelto de Chart.js. Esta librería sirve para dibujar
+    gráficas (pastel, barras, líneas, etc). En la app principal
+    la uso en grafico.html para mostrar el análisis de
     transacciones del usuario.
   -->
 
   <h2>Ejemplo 3: Chart.js</h2>
-  <p>Esta libreria sirve para hacer graficas. Aqui un ejemplo de grafico de barras simple.</p>
+  <p>Esta librería sirve para hacer gráficas. Aquí un ejemplo de gráfico de barras simple.</p>
 
   <canvas id="miGraficoEjemplo" width="400" height="250"></canvas>
 
-  <!-- Cargamos Chart.js desde un CDN -->
+  <!-- Cargo Chart.js desde un CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 
   <script>
-    // Agarramos el "lienzo" (canvas) donde se va a dibujar
+    // Agarro el "lienzo" (canvas) donde se va a dibujar
     var contexto = document.getElementById("miGraficoEjemplo").getContext("2d");
 
-    // Creamos el grafico. Le pasamos el tipo, los datos y opciones.
+    // Creo el grafico. Le paso el tipo, los datos y opciones.
     new Chart(contexto, {
       type: "bar", // tipo de grafico: barras
       data: {
         labels: ["Pikachu", "Charmander", "Squirtle", "Bulbasaur"],
         datasets: [{
-          label: "Numero de entrenadores",
+          label: "Número de entrenadores",
           data: [12, 7, 9, 5], // datos de ejemplo, inventados
           backgroundColor: ["#FFCB05", "#e74c3c", "#3498db", "#27ae60"]
         }]

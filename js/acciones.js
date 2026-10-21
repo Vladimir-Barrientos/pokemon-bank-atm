@@ -1,16 +1,9 @@
-/* =========================================================
-   acciones.js
-   Logica de la pantalla principal del cajero: depositar,
-   retirar, consultar saldo, pagar servicios y salir.
-   ========================================================= */
+// acciones.js
+// Logica de la pantalla principal del cajero: depositar,
+// retirar, consultar saldo, pagar servicios y salir
 
-/* =========================================================
-   VARIABLES GLOBALES
-   (siempre declaradas al inicio, antes de cualquier funcion)
-
-   El <script> esta al final del body, despues del HTML, asi
-   que los elementos ya existen cuando buscamos con getElementById.
-   ========================================================= */
+// El <script> esta al final del body, despues del HTML, asi
+// que los elementos ya existen cuando busco con getElementById
 
 // Textos de la tarjeta del usuario
 var nombreUsuario = document.getElementById("nombreUsuario");
@@ -37,19 +30,17 @@ var btnConfirmarPago = document.getElementById("btnConfirmarPago");
 var btnSalir = document.getElementById("btnSalir");
 
 
-/* =========================================================
-   FUNCIONES
-   ========================================================= */
+// Funciones
 
 // Lee el saldo guardado y lo escribe en pantalla con formato
-// de dinero (ej. $5,000.00). La usamos varias veces, por eso
-// la hicimos funcion aparte en vez de repetir el codigo.
+// de dinero (ej. $5,000.00). La uso varias veces, por eso
+// la hice funcion aparte en vez de repetir el codigo
 function actualizarSaldoEnPantalla() {
   var saldo = obtenerSaldo();
   saldoActual.textContent = formatearMoneda(saldo);
 }
 
-// BOTON: Consultar saldo. Solo muestra el saldo, no cambia nada.
+// BOTON: Consultar saldo. Solo muestra el saldo, no cambia nada
 function manejarConsultarSaldo() {
   var saldo = obtenerSaldo();
   swal("Consulta de saldo", "Su saldo disponible es: " + formatearMoneda(saldo), "success");
@@ -57,30 +48,30 @@ function manejarConsultarSaldo() {
 
 // BOTON: Confirmar Deposito
 function manejarConfirmarDeposito() {
-  // Tomamos el valor escrito y lo pasamos a numero decimal
+  // Tomo el valor escrito y lo paso a numero decimal
   var monto = parseFloat(inputMontoDeposito.value);
 
   // Validacion: tiene que ser un numero y mayor que cero
   if (isNaN(monto) || monto <= 0) {
-    swal("Error", "Escriba un monto valido mayor a 0.", "error");
+    swal("Error", "Escriba un monto válido mayor a 0.", "error");
     return;
   }
 
-  // Sumamos el monto al saldo actual
+  // Sumo el monto al saldo actual
   var saldoNuevo = obtenerSaldo() + monto;
   guardarSaldo(saldoNuevo);
 
-  // Guardamos la transaccion en el historial
-  agregarTransaccion("Deposito", monto, "Deposito en efectivo");
+  // Guardo la transaccion en el historial
+  agregarTransaccion("Depósito", monto, "Depósito en efectivo");
 
-  // Actualizamos lo que se ve en pantalla
+  // Actualizo lo que se ve en pantalla
   actualizarSaldoEnPantalla();
 
-  // Cerramos el modal (usamos jQuery porque Bootstrap 4 lo usa)
+  // Cierro el modal (uso jQuery porque Bootstrap 4 lo usa)
   $("#modalDeposito").modal("hide");
   inputMontoDeposito.value = "";
 
-  swal("Deposito exitoso", "Se deposito " + formatearMoneda(monto), "success");
+  swal("Depósito exitoso", "Se depositó " + formatearMoneda(monto), "success");
 }
 
 // BOTON: Confirmar Retiro
@@ -88,7 +79,7 @@ function manejarConfirmarRetiro() {
   var monto = parseFloat(inputMontoRetiro.value);
 
   if (isNaN(monto) || monto <= 0) {
-    swal("Error", "Escriba un monto valido mayor a 0.", "error");
+    swal("Error", "Escriba un monto válido mayor a 0.", "error");
     return;
   }
 
@@ -110,7 +101,7 @@ function manejarConfirmarRetiro() {
   $("#modalRetiro").modal("hide");
   inputMontoRetiro.value = "";
 
-  swal("Retiro exitoso", "Se retiro " + formatearMoneda(monto), "success");
+  swal("Retiro exitoso", "Se retiró " + formatearMoneda(monto), "success");
 }
 
 // BOTON: Confirmar Pago de servicio
@@ -119,7 +110,7 @@ function manejarConfirmarPago() {
   var monto = parseFloat(inputMontoPago.value);
 
   if (isNaN(monto) || monto <= 0) {
-    swal("Error", "Escriba un monto valido mayor a 0.", "error");
+    swal("Error", "Escriba un monto válido mayor a 0.", "error");
     return;
   }
 
@@ -133,8 +124,8 @@ function manejarConfirmarPago() {
   var saldoNuevo = saldoDisponible - monto;
   guardarSaldo(saldoNuevo);
 
-  // Aqui guardamos el tipo de servicio dentro de la descripcion
-  // para que luego en el grafico se pueda agrupar bien.
+  // Aqui guardo el tipo de servicio dentro de la descripcion
+  // para que luego en el grafico se pueda agrupar bien
   agregarTransaccion("Pago de servicio", monto, servicioElegido);
 
   actualizarSaldoEnPantalla();
@@ -142,17 +133,17 @@ function manejarConfirmarPago() {
   $("#modalPago").modal("hide");
   inputMontoPago.value = "";
 
-  swal("Pago exitoso", "Se pago " + formatearMoneda(monto) + " de " + servicioElegido, "success");
+  swal("Pago exitoso", "Se pagó " + formatearMoneda(monto) + " de " + servicioElegido, "success");
 }
 
 // BOTON: Salir (cerrar sesion)
 function manejarSalir() {
-  // Le preguntamos primero si esta seguro, usando SweetAlert
+  // Le pregunto primero si esta seguro, usando SweetAlert
   swal({
-    title: "Cerrar sesion",
+    title: "Cerrar sesión",
     text: "¿Seguro que desea salir?",
     icon: "warning",
-    buttons: ["Cancelar", "Si, salir"]
+    buttons: ["Cancelar", "Sí, salir"]
   }).then(function (confirmado) {
     if (confirmado) {
       cerrarSesion();
@@ -162,25 +153,21 @@ function manejarSalir() {
 }
 
 
-/* =========================================================
-   CODIGO QUE SE EJECUTA AL CARGAR LA PAGINA
-   ========================================================= */
-
-// Si el usuario no ha iniciado sesion, lo sacamos de esta
-// pagina (no puede entrar directo sin PIN).
+// Si el usuario no ha iniciado sesion, lo saco de esta
+// pagina (no puede entrar directo sin PIN)
 protegerPagina();
 
-// Nos aseguramos que los datos existan
+// Me aseguro que los datos existan
 inicializarDatos();
 
-// Ponemos el nombre y numero de cuenta en pantalla
+// Pongo el nombre y numero de cuenta en pantalla
 nombreUsuario.textContent = USUARIO_PRUEBA.nombre;
 numeroCuentaUsuario.textContent = "Cuenta: " + USUARIO_PRUEBA.numeroCuenta;
 
-// Mostramos el saldo actual
+// Muestro el saldo actual
 actualizarSaldoEnPantalla();
 
-// Conectamos cada boton con su funcion
+// Conecto cada boton con su funcion
 btnConsultarSaldo.addEventListener("click", manejarConsultarSaldo);
 btnConfirmarDeposito.addEventListener("click", manejarConfirmarDeposito);
 btnConfirmarRetiro.addEventListener("click", manejarConfirmarRetiro);

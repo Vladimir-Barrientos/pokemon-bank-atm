@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <!-- Esto hace que la pagina se vea bien en celulares (responsive) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pokemon Bank - Iniciar Sesion</title>
+  <title>Pokémon Bank - Iniciar Sesión</title>
 
-  <!-- Bootstrap 4 (framework CSS que pide la guia del proyecto) -->
+  <!-- Bootstrap 4 (framework CSS, para que la app sea responsive) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
 
-  <!-- Nuestro CSS propio con los estilos de Pokemon Bank -->
+  <!-- Mi CSS propio con los estilos de Pokémon Bank -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -17,21 +17,21 @@
   <!-- container de bootstrap para centrar todo -->
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-md-5">
+      <div class="col-md-7 col-lg-5">
 
         <!-- Esta es la "pantalla" del cajero -->
         <div class="pantalla-atm">
 
           <!-- Encabezado con el nombre del banco -->
           <div class="encabezado-banco">
-            <h1>Pokemon Bank</h1>
+            <h1>Pokémon Bank</h1>
           </div>
 
           <p class="text-center text-muted">
-            Ingrese su PIN de 4 digitos para continuar
+            Ingrese su PIN de 4 dígitos para continuar
           </p>
 
-          <!-- Formulario de login. Usamos un <form> para que al
+          <!-- Formulario de login. Uso un <form> para que al
                darle "Enter" tambien funcione el boton. -->
           <form id="formLogin">
 
@@ -49,12 +49,12 @@
               <!-- Aqui va a aparecer el mensaje de error si el PIN
                    esta mal escrito (lo llena validate.js / JS) -->
               <small id="mensajeError" class="form-text text-danger text-center" style="display:none;">
-                El PIN debe tener exactamente 4 numeros.
+                El PIN debe tener exactamente 4 números.
               </small>
             </div>
 
             <!-- Boton para enviar el PIN -->
-            <button type="submit" class="btn btn-amarillo btn-atm">
+            <button type="submit" class="btn btn-verde btn-atm">
               Ingresar
             </button>
           </form>
@@ -69,16 +69,16 @@
     </div>
   </div>
 
-  <!-- ============ LIBRERIAS (JS) ============ -->
+  <!-- Librerias (JS) -->
 
   <!-- jQuery y Bootstrap JS (bootstrap los necesita para los modales) -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- SweetAlert: lo usamos para mostrar el mensaje de "PIN incorrecto" -->
+  <!-- SweetAlert: lo uso para mostrar el mensaje de "PIN incorrecto" -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert@2.1.2/dist/sweetalert.min.js"></script>
 
-  <!-- Nuestros archivos propios -->
+  <!-- Mis archivos propios -->
   <script src="js/data.js"></script>
   <script src="js/login.js"></script>
 

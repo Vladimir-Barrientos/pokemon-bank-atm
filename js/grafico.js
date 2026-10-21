@@ -1,28 +1,20 @@
-/* =========================================================
-   grafico.js
-   Suma cuanto dinero se ha movido por cada tipo de
-   transaccion y lo dibuja en un grafico de pastel usando
-   la libreria Chart.js.
-   ========================================================= */
+// grafico.js
+// Suma cuanto dinero se ha movido por cada tipo de
+// transaccion y lo dibuja en un grafico de pastel usando
+// la librería Chart.js
 
-/* =========================================================
-   VARIABLES GLOBALES
-   (siempre declaradas al inicio, antes de cualquier funcion)
-   ========================================================= */
 var canvasGrafico = document.getElementById("graficoTransacciones");
 var mensajeSinDatosGrafico = document.getElementById("mensajeSinDatosGrafico");
 
 
-/* =========================================================
-   FUNCIONES
-   ========================================================= */
+// Funciones
 
 // Recorre el historial y suma los montos agrupados por tipo
 // de transaccion. Regresa un objeto, por ejemplo:
-// { "Deposito": 500, "Retiro": 100, "Pago de servicio": 60 }
+// { "Depósito": 500, "Retiro": 100, "Pago de servicio": 60 }
 function calcularSumasPorTipo(historial) {
   var sumasPorTipo = {
-    "Deposito": 0,
+    "Depósito": 0,
     "Retiro": 0,
     "Pago de servicio": 0
   };
@@ -30,7 +22,7 @@ function calcularSumasPorTipo(historial) {
   for (var i = 0; i < historial.length; i++) {
     var transaccion = historial[i];
 
-    // Si por algun motivo el tipo no esta en la cajita, lo creamos
+    // Si por algun motivo el tipo no esta en la cajita, lo creo
     if (sumasPorTipo[transaccion.tipo] === undefined) {
       sumasPorTipo[transaccion.tipo] = 0;
     }
@@ -42,7 +34,7 @@ function calcularSumasPorTipo(historial) {
 }
 
 // Dibuja el grafico de pastel con Chart.js usando las sumas
-// que ya calculamos con calcularSumasPorTipo().
+// que ya calcule con calcularSumasPorTipo()
 function dibujarGrafico(sumasPorTipo) {
   var etiquetas = Object.keys(sumasPorTipo);
   var valores = [];
@@ -58,7 +50,7 @@ function dibujarGrafico(sumasPorTipo) {
     data: {
       labels: etiquetas,
       datasets: [{
-        label: "Monto por tipo de transaccion",
+        label: "Monto por tipo de transacción",
         data: valores,
         backgroundColor: [
           "#27ae60", // verde para deposito
@@ -77,11 +69,6 @@ function dibujarGrafico(sumasPorTipo) {
     }
   });
 }
-
-
-/* =========================================================
-   CODIGO QUE SE EJECUTA AL CARGAR LA PAGINA
-   ========================================================= */
 
 protegerPagina();
 inicializarDatos();

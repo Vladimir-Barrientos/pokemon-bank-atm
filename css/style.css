@@ -1,24 +1,24 @@
-/* =========================================================
-   style.css
-   Aqui va TODO el diseño visual de Pokemon Bank ATM.
+/* style.css
+   Aquí va TODO el diseño visual de Pokémon Bank ATM.
    Esta hecho bien simple a proposito, con comentarios en
    cada parte para poder explicarlo facil.
-   ========================================================= */
+
+   Paleta: solo verde y negro. */
 
 /* Esto define "variables" de color para no repetir el mismo
    color 20 veces en el archivo. Si despues quiero cambiar
-   el color amarillo, solo lo cambio aqui una vez. */
+   el color verde, solo lo cambio aqui una vez. */
 :root {
-  --color-amarillo: #FFCB05;   /* amarillo tipo Pikachu */
-  --color-azul: #2A75BB;       /* azul tipo Pokemon */
-  --color-azul-oscuro: #003A70;
+  --color-verde: #00C853;       /* verde principal (botones) */
+  --color-verde-oscuro: #0B3D23; /* verde oscuro (tarjetas, header) */
+  --color-negro: #0D0D0D;        /* fondo de toda la pagina */
   --color-gris-claro: #f2f2f2;
 }
 
-/* Le ponemos un fondo azul a toda la pagina y cambiamos
+/* Le pongo un fondo negro a toda la pagina y cambio
    la fuente de letra para que se vea mas "app" */
 body {
-  background-color: var(--color-azul-oscuro);
+  background-color: var(--color-negro);
   font-family: 'Segoe UI', Arial, sans-serif;
   min-height: 100vh;
 }
@@ -29,13 +29,13 @@ body {
 .pantalla-atm {
   background-color: #ffffff;
   border-radius: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
   padding: 30px;
   margin-top: 40px;
   margin-bottom: 40px;
 }
 
-/* El encabezado tipo "Pokemon Bank" arriba de cada pantalla */
+/* El encabezado tipo "Pokémon Bank" arriba de cada pantalla */
 .encabezado-banco {
   display: flex;
   align-items: center;
@@ -45,7 +45,7 @@ body {
 }
 
 .encabezado-banco h1 {
-  color: var(--color-azul);
+  color: var(--color-verde-oscuro);
   font-weight: bold;
   font-size: 28px;
   margin: 0;
@@ -55,7 +55,7 @@ body {
   height: 50px;
 }
 
-/* Caja donde se escribe el PIN, la hacemos grande y
+/* Caja donde se escribe el PIN, la hago grande y
    centrada para que se vea como un teclado de cajero */
 .caja-pin {
   text-align: center;
@@ -75,21 +75,22 @@ body {
   font-weight: bold;
 }
 
-/* Color amarillo para el boton principal (como el logo) */
-.btn-amarillo {
-  background-color: var(--color-amarillo);
-  border-color: var(--color-amarillo);
-  color: var(--color-azul-oscuro);
+/* Color verde para el boton principal */
+.btn-verde {
+  background-color: var(--color-verde);
+  border-color: var(--color-verde);
+  color: #ffffff;
 }
 
-.btn-amarillo:hover {
-  background-color: #e6b800;
-  color: var(--color-azul-oscuro);
+.btn-verde:hover {
+  background-color: #00a844;
+  border-color: #00a844;
+  color: #ffffff;
 }
 
 /* Tarjeta donde se muestra el nombre del cliente y la cuenta */
 .tarjeta-usuario {
-  background-color: var(--color-azul);
+  background-color: var(--color-verde-oscuro);
   color: #ffffff;
   border-radius: 15px;
   padding: 20px;
@@ -112,15 +113,19 @@ body {
   font-size: 30px;
   font-weight: bold;
   margin-top: 10px;
+  color: var(--color-verde);
 }
 
 /* Tabla del historial un poco mas bonita */
 .tabla-historial th {
-  background-color: var(--color-azul);
+  background-color: var(--color-verde-oscuro);
   color: #ffffff;
 }
 
-/* Clase para texto en rojo (retiros, pagos = dinero que sale) */
+/* Clase para texto en rojo (retiros, pagos = dinero que sale).
+   OJO: dejo el rojo aqui a proposito, no por gusto, sino
+   porque ayuda a diferenciar rapido "entra dinero" vs "sale
+   dinero" en la tabla. El resto del diseño es verde y negro. */
 .texto-negativo {
   color: #c0392b;
   font-weight: bold;
@@ -128,6 +133,45 @@ body {
 
 /* Clase para texto en verde (depositos = dinero que entra) */
 .texto-positivo {
-  color: #27ae60;
+  color: var(--color-verde);
   font-weight: bold;
+}
+
+/* RESPONSIVE: en pantallas grandes (computadora) agrando
+   un poco la "pantalla" del cajero para que se vea mejor,
+   en vez de quedarse chiquita en medio de todo el monitor.
+   En celular (menos de 992px) se queda con el tamaño normal
+   de arriba, para que no se desborde la pantalla. */
+@media (min-width: 992px) {
+  .pantalla-atm {
+    padding: 45px;
+    border-radius: 26px;
+  }
+
+  .encabezado-banco h1 {
+    font-size: 36px;
+  }
+
+  .caja-pin {
+    font-size: 42px;
+    letter-spacing: 20px;
+    max-width: 280px;
+  }
+
+  .btn-atm {
+    padding: 20px;
+    font-size: 20px;
+  }
+
+  .tarjeta-usuario {
+    padding: 30px;
+  }
+
+  .tarjeta-usuario h3 {
+    font-size: 26px;
+  }
+
+  .saldo-grande {
+    font-size: 40px;
+  }
 }

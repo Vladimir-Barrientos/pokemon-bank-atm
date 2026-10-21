@@ -9,16 +9,16 @@
 <body class="p-5">
 
   <!--
-    Ejemplo suelto de ValidateJS. Esta libreria sirve para
-    validar formularios de una forma mas ordenada, en vez de
+    Ejemplo suelto de ValidateJS. Esta librería sirve para
+    validar formularios de una forma más ordenada, en vez de
     escribir muchos "if" a mano.
   -->
 
   <h2>Ejemplo 4: ValidateJS</h2>
-  <p>Esta libreria sirve para validar los datos de un formulario (ej. que un campo no este vacio, o que tenga cierto largo).</p>
+  <p>Esta librería sirve para validar los datos de un formulario (ej. que un campo no esté vacío, o que tenga cierto largo).</p>
 
   <div class="form-group" style="max-width: 300px;">
-    <label>PIN (debe tener 4 numeros)</label>
+    <label>PIN (debe tener 4 números)</label>
     <input type="text" id="campoPin" class="form-control" placeholder="Ej. 1234">
   </div>
 
@@ -26,42 +26,42 @@
 
   <p id="resultadoValidacion" class="mt-3"></p>
 
-  <!-- Cargamos ValidateJS desde un CDN -->
+  <!-- Cargo ValidateJS desde un CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
 
   <script>
     document.getElementById("btnValidar").addEventListener("click", function () {
 
-      // Tomamos el valor que escribio el usuario
+      // Tomo el valor que escribió el usuario
       var valorPin = document.getElementById("campoPin").value;
 
-      // Armamos un "objeto" con el dato a validar (asi lo pide la libreria)
+      // Armo un "objeto" con el dato a validar (así lo pide la librería)
       var datosAValidar = {
         pin: valorPin
       };
 
-      // Armamos las "reglas" de validacion para ese dato
+      // Armo las "reglas" de validación para ese dato
       var reglas = {
         pin: {
-          presence: { allowEmpty: false, message: "no puede estar vacio" },
-          length: { is: 4, message: "debe tener exactamente 4 numeros" },
-          numericality: { onlyInteger: true, message: "debe ser solo numeros" }
+          presence: { allowEmpty: false, message: "no puede estar vacío" },
+          length: { is: 4, message: "debe tener exactamente 4 números" },
+          numericality: { onlyInteger: true, message: "debe ser solo números" }
         }
       };
 
-      // validate.validate() regresa "undefined" si todo esta bien,
-      // o un objeto con los errores si algo esta mal.
+      // validate.validate() regresa "undefined" si todo está bien,
+      // o un objeto con los errores si algo está mal.
       var errores = validate(datosAValidar, reglas);
 
       var parrafoResultado = document.getElementById("resultadoValidacion");
 
       if (errores) {
-        // Si hay errores, los mostramos en pantalla
+        // Si hay errores, los muestro en pantalla
         parrafoResultado.className = "text-danger";
         parrafoResultado.textContent = "Error: PIN " + errores.pin[0];
       } else {
         parrafoResultado.className = "text-success";
-        parrafoResultado.textContent = "El PIN es valido.";
+        parrafoResultado.textContent = "El PIN es válido.";
       }
     });
   </script>

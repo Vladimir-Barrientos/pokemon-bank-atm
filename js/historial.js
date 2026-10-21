@@ -1,44 +1,36 @@
-/* =========================================================
-   historial.js
-   Pinta la tabla con todas las transacciones guardadas y
-   arma un PDF descargable usando la libreria jsPDF.
-   ========================================================= */
+// historial.js
+// Pinta la tabla con todas las transacciones guardadas y
+// arma un PDF descargable usando la librería jsPDF
 
-/* =========================================================
-   VARIABLES GLOBALES
-   (siempre declaradas al inicio, antes de cualquier funcion)
-   ========================================================= */
 var cuerpoTabla = document.getElementById("cuerpoTablaHistorial");
 var mensajeSinDatos = document.getElementById("mensajeSinDatos");
 var btnDescargarPdf = document.getElementById("btnDescargarPdf");
 
 
-/* =========================================================
-   FUNCIONES
-   ========================================================= */
+// Funciones
 
 // Recorre el historial guardado y crea una fila de tabla por
-// cada transaccion.
+// cada transaccion
 function pintarTablaHistorial() {
   var historial = obtenerHistorial();
 
-  // Si no hay ninguna transaccion, mostramos el mensaje y no
-  // seguimos con el resto de la funcion.
+  // Si no hay ninguna transaccion, muestro el mensaje y no
+  // sigo con el resto de la funcion
   if (historial.length === 0) {
     mensajeSinDatos.style.display = "block";
     return;
   }
 
-  // Recorremos cada transaccion con un "for" normal (facil de
+  // Recorro cada transaccion con un "for" normal (facil de
   // entender y explicar paso a paso)
   for (var i = 0; i < historial.length; i++) {
     var transaccion = historial[i];
 
-    // Creamos una fila nueva de tabla (<tr>)
+    // Creo una fila nueva de tabla (<tr>)
     var fila = document.createElement("tr");
 
-    // Decidimos si el monto se ve en rojo (sale dinero) o en
-    // verde (entra dinero), segun el tipo de transaccion.
+    // Decido si el monto se ve en rojo (sale dinero) o en
+    // verde (entra dinero), segun el tipo de transaccion
     var claseColor = "texto-positivo";
     var signo = "+";
     if (transaccion.tipo === "Retiro" || transaccion.tipo === "Pago de servicio") {
@@ -46,14 +38,14 @@ function pintarTablaHistorial() {
       signo = "-";
     }
 
-    // Armamos el contenido de la fila con las 4 columnas
+    // Armo el contenido de la fila con las 4 columnas
     fila.innerHTML =
       "<td>" + transaccion.fecha + "</td>" +
       "<td>" + transaccion.tipo + "</td>" +
       "<td>" + transaccion.descripcion + "</td>" +
       "<td class='" + claseColor + "'>" + signo + formatearMoneda(transaccion.monto) + "</td>";
 
-    // Agregamos la fila al cuerpo de la tabla
+    // Agrego la fila al cuerpo de la tabla
     cuerpoTabla.appendChild(fila);
   }
 }
@@ -66,13 +58,13 @@ function manejarDescargarPdf() {
 
   // Titulo del documento
   doc.setFontSize(16);
-  doc.text("Pokemon Bank - Historial de transacciones", 10, 15);
+  doc.text("Pokémon Bank - Historial de transacciones", 10, 15);
 
   doc.setFontSize(11);
   doc.text("Cliente: " + USUARIO_PRUEBA.nombre, 10, 25);
   doc.text("Cuenta: " + USUARIO_PRUEBA.numeroCuenta, 10, 31);
 
-  // Empezamos a escribir la lista de transacciones desde aqui
+  // Empiezo a escribir la lista de transacciones desde aqui
   var y = 42;
   var historialActual = obtenerHistorial();
 
@@ -85,8 +77,8 @@ function manejarDescargarPdf() {
 
       doc.text(linea, 10, y);
 
-      // Bajamos 7 unidades para la siguiente linea, y si ya nos
-      // quedamos sin espacio en la hoja, agregamos una pagina nueva.
+      // Bajo 7 unidades para la siguiente linea, y si ya me
+      // quedo sin espacio en la hoja, agrego una pagina nueva
       y = y + 7;
       if (y > 280) {
         doc.addPage();
@@ -100,11 +92,7 @@ function manejarDescargarPdf() {
 }
 
 
-/* =========================================================
-   CODIGO QUE SE EJECUTA AL CARGAR LA PAGINA
-   ========================================================= */
-
-// Protegemos la pagina (sin login no se puede ver el historial)
+// Protejo la pagina (sin login no se puede ver el historial)
 protegerPagina();
 inicializarDatos();
 
