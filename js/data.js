@@ -9,7 +9,11 @@
    datos real, todo se guarda en el navegador del usuario.
    ========================================================= */
 
-/* --------- 1. Usuario de prueba (datos "quemados") --------- */
+/* =========================================================
+   VARIABLES Y CONSTANTES GLOBALES
+   (siempre declaradas al inicio, antes de cualquier funcion)
+   ========================================================= */
+
 // Este es el unico usuario que puede entrar al cajero.
 // El profe pidio "a partir de los datos de un usuario de
 // prueba", asi que aqui esta ese usuario.
@@ -20,7 +24,12 @@ var USUARIO_PRUEBA = {
   saldoInicial: 5000.00
 };
 
-/* --------- 2. Funcion para inicializar los datos --------- */
+
+/* =========================================================
+   FUNCIONES
+   ========================================================= */
+
+/* --------- Funcion para inicializar los datos --------- */
 // Esta funcion revisa si ya existe informacion guardada en
 // localStorage. Si es la PRIMERA vez que se usa la pagina,
 // crea el saldo inicial y un historial vacio.
@@ -38,7 +47,7 @@ function inicializarDatos() {
   }
 }
 
-/* --------- 3. Funciones para manejar el SALDO --------- */
+/* --------- Funciones para manejar el SALDO --------- */
 
 // Regresa el saldo actual como numero (parseFloat convierte
 // el texto guardado en localStorage a un numero decimal).
@@ -52,7 +61,7 @@ function guardarSaldo(nuevoSaldo) {
   localStorage.setItem("saldo", nuevoSaldo);
 }
 
-/* --------- 4. Funciones para manejar el HISTORIAL --------- */
+/* --------- Funciones para manejar el HISTORIAL --------- */
 
 // Regresa el arreglo (array) de transacciones guardadas.
 function obtenerHistorial() {
@@ -83,7 +92,7 @@ function agregarTransaccion(tipo, monto, descripcion) {
   localStorage.setItem("historial", JSON.stringify(historial));
 }
 
-/* --------- 5. Funcion para dar formato a dinero --------- */
+/* --------- Funcion para dar formato a dinero --------- */
 // Convierte un numero como 1500.5 en texto "$1,500.50"
 function formatearMoneda(numero) {
   return "$" + numero.toLocaleString("en-US", {
@@ -92,7 +101,7 @@ function formatearMoneda(numero) {
   });
 }
 
-/* --------- 6. Funciones para la SESION (login) --------- */
+/* --------- Funciones para la SESION (login) --------- */
 
 // Marca que el usuario ya inicio sesion correctamente.
 // Usamos sessionStorage (no localStorage) porque la sesion

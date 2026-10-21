@@ -5,25 +5,22 @@
    la libreria Chart.js.
    ========================================================= */
 
-window.addEventListener("DOMContentLoaded", function () {
+/* =========================================================
+   VARIABLES GLOBALES
+   (siempre declaradas al inicio, antes de cualquier funcion)
+   ========================================================= */
+var canvasGrafico = document.getElementById("graficoTransacciones");
+var mensajeSinDatosGrafico = document.getElementById("mensajeSinDatosGrafico");
 
-  protegerPagina();
-  inicializarDatos();
 
-  var historial = obtenerHistorial();
+/* =========================================================
+   FUNCIONES
+   ========================================================= */
 
-  // Si no hay transacciones, no tiene sentido dibujar el grafico
-  if (historial.length === 0) {
-    document.getElementById("mensajeSinDatosGrafico").style.display = "block";
-    document.getElementById("graficoTransacciones").style.display = "none";
-    return; // cortamos aqui, no seguimos con el resto del codigo
-  }
-
-  /* ---------------------------------------------------------
-     Paso 1: Sumar los montos agrupados por tipo de transaccion.
-     Usamos un objeto normal como si fuera una "cajita" donde
-     cada tipo tiene su propia suma acumulada.
-     --------------------------------------------------------- */
+// Recorre el historial y suma los montos agrupados por tipo
+// de transaccion. Regresa un objeto, por ejemplo:
+// { "Deposito": 500, "Retiro": 100, "Pago de servicio": 60 }
+function calcularSumasPorTipo(historial) {
   var sumasPorTipo = {
     "Deposito": 0,
     "Retiro": 0,
@@ -41,11 +38,12 @@ window.addEventListener("DOMContentLoaded", function () {
     sumasPorTipo[transaccion.tipo] = sumasPorTipo[transaccion.tipo] + transaccion.monto;
   }
 
-  /* ---------------------------------------------------------
-     Paso 2: Armar las listas que necesita Chart.js:
-     - etiquetas: nombres de cada tipo (ej. "Deposito")
-     - valores: la suma de dinero de cada tipo
-     --------------------------------------------------------- */
+  return sumasPorTipo;
+}
+
+// Dibuja el grafico de pastel con Chart.js usando las sumas
+// que ya calculamos con calcularSumasPorTipo().
+function dibujarGrafico(sumasPorTipo) {
   var etiquetas = Object.keys(sumasPorTipo);
   var valores = [];
 
@@ -53,10 +51,7 @@ window.addEventListener("DOMContentLoaded", function () {
     valores.push(sumasPorTipo[etiquetas[j]]);
   }
 
-  /* ---------------------------------------------------------
-     Paso 3: Dibujar el grafico con Chart.js
-     --------------------------------------------------------- */
-  var contexto = document.getElementById("graficoTransacciones").getContext("2d");
+  var contexto = canvasGrafico.getContext("2d");
 
   new Chart(contexto, {
     type: "pie", // tipo de grafico: pastel
@@ -81,5 +76,23 @@ window.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
+}
 
-});
+
+/* =========================================================
+   CODIGO QUE SE EJECUTA AL CARGAR LA PAGINA
+   ========================================================= */
+
+protegerPagina();
+inicializarDatos();
+
+var historial = obtenerHistorial();
+
+// Si no hay transacciones, no tiene sentido dibujar el grafico
+if (historial.length === 0) {
+  mensajeSinDatosGrafico.style.display = "block";
+  canvasGrafico.style.display = "none";
+} else {
+  var sumasPorTipo = calcularSumasPorTipo(historial);
+  dibujarGrafico(sumasPorTipo);
+}

@@ -4,168 +4,185 @@
    retirar, consultar saldo, pagar servicios y salir.
    ========================================================= */
 
-window.addEventListener("DOMContentLoaded", function () {
+/* =========================================================
+   VARIABLES GLOBALES
+   (siempre declaradas al inicio, antes de cualquier funcion)
 
-  // Paso 1: si el usuario no ha iniciado sesion, lo sacamos
-  // de esta pagina (no puede entrar directo sin PIN).
-  protegerPagina();
+   El <script> esta al final del body, despues del HTML, asi
+   que los elementos ya existen cuando buscamos con getElementById.
+   ========================================================= */
 
-  // Paso 2: nos aseguramos que los datos existan
-  inicializarDatos();
+// Textos de la tarjeta del usuario
+var nombreUsuario = document.getElementById("nombreUsuario");
+var numeroCuentaUsuario = document.getElementById("numeroCuentaUsuario");
+var saldoActual = document.getElementById("saldoActual");
 
-  // Paso 3: ponemos el nombre y numero de cuenta en pantalla
-  document.getElementById("nombreUsuario").textContent = USUARIO_PRUEBA.nombre;
-  document.getElementById("numeroCuentaUsuario").textContent = "Cuenta: " + USUARIO_PRUEBA.numeroCuenta;
+// Boton de consultar saldo
+var btnConsultarSaldo = document.getElementById("btnConsultarSaldo");
 
-  // Paso 4: mostramos el saldo actual (llamamos a una funcion
-  // propia para no repetir codigo, la definimos mas abajo)
-  actualizarSaldoEnPantalla();
+// Elementos del modal de Deposito
+var inputMontoDeposito = document.getElementById("montoDeposito");
+var btnConfirmarDeposito = document.getElementById("btnConfirmarDeposito");
+
+// Elementos del modal de Retiro
+var inputMontoRetiro = document.getElementById("montoRetiro");
+var btnConfirmarRetiro = document.getElementById("btnConfirmarRetiro");
+
+// Elementos del modal de Pago de servicios
+var selectTipoServicio = document.getElementById("tipoServicio");
+var inputMontoPago = document.getElementById("montoPago");
+var btnConfirmarPago = document.getElementById("btnConfirmarPago");
+
+// Boton de salir
+var btnSalir = document.getElementById("btnSalir");
 
 
-  /* ---------------------------------------------------------
-     Funcion que lee el saldo guardado y lo escribe en pantalla
-     con formato de dinero (ej. $5,000.00)
-     --------------------------------------------------------- */
-  function actualizarSaldoEnPantalla() {
-    var saldo = obtenerSaldo();
-    document.getElementById("saldoActual").textContent = formatearMoneda(saldo);
+/* =========================================================
+   FUNCIONES
+   ========================================================= */
+
+// Lee el saldo guardado y lo escribe en pantalla con formato
+// de dinero (ej. $5,000.00). La usamos varias veces, por eso
+// la hicimos funcion aparte en vez de repetir el codigo.
+function actualizarSaldoEnPantalla() {
+  var saldo = obtenerSaldo();
+  saldoActual.textContent = formatearMoneda(saldo);
+}
+
+// BOTON: Consultar saldo. Solo muestra el saldo, no cambia nada.
+function manejarConsultarSaldo() {
+  var saldo = obtenerSaldo();
+  swal("Consulta de saldo", "Su saldo disponible es: " + formatearMoneda(saldo), "success");
+}
+
+// BOTON: Confirmar Deposito
+function manejarConfirmarDeposito() {
+  // Tomamos el valor escrito y lo pasamos a numero decimal
+  var monto = parseFloat(inputMontoDeposito.value);
+
+  // Validacion: tiene que ser un numero y mayor que cero
+  if (isNaN(monto) || monto <= 0) {
+    swal("Error", "Escriba un monto valido mayor a 0.", "error");
+    return;
   }
 
+  // Sumamos el monto al saldo actual
+  var saldoNuevo = obtenerSaldo() + monto;
+  guardarSaldo(saldoNuevo);
 
-  /* ---------------------------------------------------------
-     BOTON: Consultar saldo
-     Solo muestra el saldo en una alerta, no cambia nada.
-     --------------------------------------------------------- */
-  document.getElementById("btnConsultarSaldo").addEventListener("click", function () {
-    var saldo = obtenerSaldo();
-    swal("Consulta de saldo", "Su saldo disponible es: " + formatearMoneda(saldo), "success");
-  });
+  // Guardamos la transaccion en el historial
+  agregarTransaccion("Deposito", monto, "Deposito en efectivo");
 
+  // Actualizamos lo que se ve en pantalla
+  actualizarSaldoEnPantalla();
 
-  /* ---------------------------------------------------------
-     BOTON: Confirmar Deposito
-     --------------------------------------------------------- */
-  document.getElementById("btnConfirmarDeposito").addEventListener("click", function () {
+  // Cerramos el modal (usamos jQuery porque Bootstrap 4 lo usa)
+  $("#modalDeposito").modal("hide");
+  inputMontoDeposito.value = "";
 
-    // Tomamos el valor escrito y lo pasamos a numero decimal
-    var inputMonto = document.getElementById("montoDeposito");
-    var monto = parseFloat(inputMonto.value);
+  swal("Deposito exitoso", "Se deposito " + formatearMoneda(monto), "success");
+}
 
-    // Validacion: tiene que ser un numero y mayor que cero
-    if (isNaN(monto) || monto <= 0) {
-      swal("Error", "Escriba un monto valido mayor a 0.", "error");
-      return;
+// BOTON: Confirmar Retiro
+function manejarConfirmarRetiro() {
+  var monto = parseFloat(inputMontoRetiro.value);
+
+  if (isNaN(monto) || monto <= 0) {
+    swal("Error", "Escriba un monto valido mayor a 0.", "error");
+    return;
+  }
+
+  var saldoDisponible = obtenerSaldo();
+
+  // Validacion importante: no se puede retirar mas de lo que hay
+  if (monto > saldoDisponible) {
+    swal("Fondos insuficientes", "No tiene suficiente saldo para retirar esa cantidad.", "error");
+    return;
+  }
+
+  var saldoNuevo = saldoDisponible - monto;
+  guardarSaldo(saldoNuevo);
+
+  agregarTransaccion("Retiro", monto, "Retiro en efectivo");
+
+  actualizarSaldoEnPantalla();
+
+  $("#modalRetiro").modal("hide");
+  inputMontoRetiro.value = "";
+
+  swal("Retiro exitoso", "Se retiro " + formatearMoneda(monto), "success");
+}
+
+// BOTON: Confirmar Pago de servicio
+function manejarConfirmarPago() {
+  var servicioElegido = selectTipoServicio.value;
+  var monto = parseFloat(inputMontoPago.value);
+
+  if (isNaN(monto) || monto <= 0) {
+    swal("Error", "Escriba un monto valido mayor a 0.", "error");
+    return;
+  }
+
+  var saldoDisponible = obtenerSaldo();
+
+  if (monto > saldoDisponible) {
+    swal("Fondos insuficientes", "No tiene suficiente saldo para pagar ese servicio.", "error");
+    return;
+  }
+
+  var saldoNuevo = saldoDisponible - monto;
+  guardarSaldo(saldoNuevo);
+
+  // Aqui guardamos el tipo de servicio dentro de la descripcion
+  // para que luego en el grafico se pueda agrupar bien.
+  agregarTransaccion("Pago de servicio", monto, servicioElegido);
+
+  actualizarSaldoEnPantalla();
+
+  $("#modalPago").modal("hide");
+  inputMontoPago.value = "";
+
+  swal("Pago exitoso", "Se pago " + formatearMoneda(monto) + " de " + servicioElegido, "success");
+}
+
+// BOTON: Salir (cerrar sesion)
+function manejarSalir() {
+  // Le preguntamos primero si esta seguro, usando SweetAlert
+  swal({
+    title: "Cerrar sesion",
+    text: "¿Seguro que desea salir?",
+    icon: "warning",
+    buttons: ["Cancelar", "Si, salir"]
+  }).then(function (confirmado) {
+    if (confirmado) {
+      cerrarSesion();
+      window.location.href = "index.html";
     }
-
-    // Sumamos el monto al saldo actual
-    var saldoActual = obtenerSaldo();
-    var saldoNuevo = saldoActual + monto;
-    guardarSaldo(saldoNuevo);
-
-    // Guardamos la transaccion en el historial
-    agregarTransaccion("Deposito", monto, "Deposito en efectivo");
-
-    // Actualizamos lo que se ve en pantalla
-    actualizarSaldoEnPantalla();
-
-    // Cerramos el modal (usamos jQuery porque Bootstrap 4 lo usa)
-    $("#modalDeposito").modal("hide");
-    inputMonto.value = "";
-
-    swal("Deposito exitoso", "Se deposito " + formatearMoneda(monto), "success");
   });
+}
 
 
-  /* ---------------------------------------------------------
-     BOTON: Confirmar Retiro
-     --------------------------------------------------------- */
-  document.getElementById("btnConfirmarRetiro").addEventListener("click", function () {
+/* =========================================================
+   CODIGO QUE SE EJECUTA AL CARGAR LA PAGINA
+   ========================================================= */
 
-    var inputMonto = document.getElementById("montoRetiro");
-    var monto = parseFloat(inputMonto.value);
+// Si el usuario no ha iniciado sesion, lo sacamos de esta
+// pagina (no puede entrar directo sin PIN).
+protegerPagina();
 
-    if (isNaN(monto) || monto <= 0) {
-      swal("Error", "Escriba un monto valido mayor a 0.", "error");
-      return;
-    }
+// Nos aseguramos que los datos existan
+inicializarDatos();
 
-    var saldoActual = obtenerSaldo();
+// Ponemos el nombre y numero de cuenta en pantalla
+nombreUsuario.textContent = USUARIO_PRUEBA.nombre;
+numeroCuentaUsuario.textContent = "Cuenta: " + USUARIO_PRUEBA.numeroCuenta;
 
-    // Validacion importante: no se puede retirar mas de lo que hay
-    if (monto > saldoActual) {
-      swal("Fondos insuficientes", "No tiene suficiente saldo para retirar esa cantidad.", "error");
-      return;
-    }
+// Mostramos el saldo actual
+actualizarSaldoEnPantalla();
 
-    var saldoNuevo = saldoActual - monto;
-    guardarSaldo(saldoNuevo);
-
-    agregarTransaccion("Retiro", monto, "Retiro en efectivo");
-
-    actualizarSaldoEnPantalla();
-
-    $("#modalRetiro").modal("hide");
-    inputMonto.value = "";
-
-    swal("Retiro exitoso", "Se retiro " + formatearMoneda(monto), "success");
-  });
-
-
-  /* ---------------------------------------------------------
-     BOTON: Confirmar Pago de servicio
-     --------------------------------------------------------- */
-  document.getElementById("btnConfirmarPago").addEventListener("click", function () {
-
-    var selectServicio = document.getElementById("tipoServicio");
-    var servicioElegido = selectServicio.value;
-
-    var inputMonto = document.getElementById("montoPago");
-    var monto = parseFloat(inputMonto.value);
-
-    if (isNaN(monto) || monto <= 0) {
-      swal("Error", "Escriba un monto valido mayor a 0.", "error");
-      return;
-    }
-
-    var saldoActual = obtenerSaldo();
-
-    if (monto > saldoActual) {
-      swal("Fondos insuficientes", "No tiene suficiente saldo para pagar ese servicio.", "error");
-      return;
-    }
-
-    var saldoNuevo = saldoActual - monto;
-    guardarSaldo(saldoNuevo);
-
-    // Aqui guardamos el tipo de servicio dentro del "tipo" para
-    // que luego en el grafico se pueda agrupar bien.
-    agregarTransaccion("Pago de servicio", monto, servicioElegido);
-
-    actualizarSaldoEnPantalla();
-
-    $("#modalPago").modal("hide");
-    inputMonto.value = "";
-
-    swal("Pago exitoso", "Se pago " + formatearMoneda(monto) + " de " + servicioElegido, "success");
-  });
-
-
-  /* ---------------------------------------------------------
-     BOTON: Salir (cerrar sesion)
-     --------------------------------------------------------- */
-  document.getElementById("btnSalir").addEventListener("click", function () {
-    // Le preguntamos primero si esta seguro, usando SweetAlert
-    swal({
-      title: "Cerrar sesion",
-      text: "¿Seguro que desea salir?",
-      icon: "warning",
-      buttons: ["Cancelar", "Si, salir"]
-    }).then(function (confirmado) {
-      if (confirmado) {
-        cerrarSesion();
-        window.location.href = "index.html";
-      }
-    });
-  });
-
-});
+// Conectamos cada boton con su funcion
+btnConsultarSaldo.addEventListener("click", manejarConsultarSaldo);
+btnConfirmarDeposito.addEventListener("click", manejarConfirmarDeposito);
+btnConfirmarRetiro.addEventListener("click", manejarConfirmarRetiro);
+btnConfirmarPago.addEventListener("click", manejarConfirmarPago);
+btnSalir.addEventListener("click", manejarSalir);
