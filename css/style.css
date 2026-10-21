@@ -1,0 +1,133 @@
+/* =========================================================
+   style.css
+   Aqui va TODO el diseño visual de Pokemon Bank ATM.
+   Esta hecho bien simple a proposito, con comentarios en
+   cada parte para poder explicarlo facil.
+   ========================================================= */
+
+/* Esto define "variables" de color para no repetir el mismo
+   color 20 veces en el archivo. Si despues quiero cambiar
+   el color amarillo, solo lo cambio aqui una vez. */
+:root {
+  --color-amarillo: #FFCB05;   /* amarillo tipo Pikachu */
+  --color-azul: #2A75BB;       /* azul tipo Pokemon */
+  --color-azul-oscuro: #003A70;
+  --color-gris-claro: #f2f2f2;
+}
+
+/* Le ponemos un fondo azul a toda la pagina y cambiamos
+   la fuente de letra para que se vea mas "app" */
+body {
+  background-color: var(--color-azul-oscuro);
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh;
+}
+
+/* Esta clase simula la "pantalla" del cajero automatico.
+   Es como una tarjeta blanca redondeada en medio de la
+   pagina, como si fuera la pantallita del ATM. */
+.pantalla-atm {
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  padding: 30px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+/* El encabezado tipo "Pokemon Bank" arriba de cada pantalla */
+.encabezado-banco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.encabezado-banco h1 {
+  color: var(--color-azul);
+  font-weight: bold;
+  font-size: 28px;
+  margin: 0;
+}
+
+.logo-banco {
+  height: 50px;
+}
+
+/* Caja donde se escribe el PIN, la hacemos grande y
+   centrada para que se vea como un teclado de cajero */
+.caja-pin {
+  text-align: center;
+  font-size: 32px;
+  letter-spacing: 15px;
+  max-width: 220px;
+  margin: 0 auto;
+}
+
+/* Botones redondeados estilo "boton de cajero" */
+.btn-atm {
+  width: 100%;
+  padding: 18px;
+  font-size: 18px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+/* Color amarillo para el boton principal (como el logo) */
+.btn-amarillo {
+  background-color: var(--color-amarillo);
+  border-color: var(--color-amarillo);
+  color: var(--color-azul-oscuro);
+}
+
+.btn-amarillo:hover {
+  background-color: #e6b800;
+  color: var(--color-azul-oscuro);
+}
+
+/* Tarjeta donde se muestra el nombre del cliente y la cuenta */
+.tarjeta-usuario {
+  background-color: var(--color-azul);
+  color: #ffffff;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.tarjeta-usuario h3 {
+  margin: 0;
+  font-weight: bold;
+}
+
+.tarjeta-usuario p {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.saldo-grande {
+  font-size: 30px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Tabla del historial un poco mas bonita */
+.tabla-historial th {
+  background-color: var(--color-azul);
+  color: #ffffff;
+}
+
+/* Clase para texto en rojo (retiros, pagos = dinero que sale) */
+.texto-negativo {
+  color: #c0392b;
+  font-weight: bold;
+}
+
+/* Clase para texto en verde (depositos = dinero que entra) */
+.texto-positivo {
+  color: #27ae60;
+  font-weight: bold;
+}
