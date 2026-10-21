@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ejemplo - jsPDF</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+</head>
+<body class="p-5">
+
+  <!--
+    Ejemplo suelto de jsPDF. Esta libreria sirve para crear
+    archivos PDF directamente desde JavaScript, sin necesidad
+    de un servidor. En la app principal la usamos para descargar
+    el historial de transacciones.
+  -->
+
+  <h2>Ejemplo 2: jsPDF</h2>
+  <p>Esta libreria sirve para generar archivos PDF desde JavaScript.</p>
+
+  <button class="btn btn-primary" id="btnGenerarPdf">Generar PDF de ejemplo</button>
+
+  <!-- Cargamos jsPDF desde un CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    document.getElementById("btnGenerarPdf").addEventListener("click", function () {
+
+      // jsPDF queda guardado dentro de "window.jspdf"
+      var jsPDF = window.jspdf.jsPDF;
+
+      // Creamos un documento PDF nuevo
+      var doc = new jsPDF();
+
+      // doc.text(texto, posicionX, posicionY) escribe texto en el PDF
+      doc.setFontSize(18);
+      doc.text("Documento de ejemplo", 10, 20);
+
+      doc.setFontSize(12);
+      doc.text("Este PDF fue generado con la libreria jsPDF.", 10, 30);
+      doc.text("Linea 1 de ejemplo.", 10, 40);
+      doc.text("Linea 2 de ejemplo.", 10, 48);
+
+      // Esto descarga el PDF en la computadora
+      doc.save("ejemplo-jspdf.pdf");
+    });
+  </script>
+
+</body>
+</html>

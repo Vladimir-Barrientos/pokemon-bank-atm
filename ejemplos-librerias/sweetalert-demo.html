@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ejemplo - SweetAlert</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+</head>
+<body class="p-5">
+
+  <!--
+    Esta pagina es solo un EJEMPLO para mostrarle al profe como
+    funciona la libreria SweetAlert, por fuera de la app principal.
+    SweetAlert sirve para mostrar alertas/mensajes bonitos en vez
+    de usar el alert() feo que trae JavaScript por defecto.
+  -->
+
+  <h2>Ejemplo 1: SweetAlert</h2>
+  <p>Esta libreria sirve para mostrar alertas bonitas al usuario (de exito, error, advertencia, etc).</p>
+
+  <!-- Ejemplo A: alerta simple de exito -->
+  <button class="btn btn-success" id="btnAlertaExito">Mostrar alerta de exito</button>
+
+  <!-- Ejemplo B: alerta que pide confirmacion (si / no) -->
+  <button class="btn btn-danger" id="btnAlertaConfirmar">Mostrar alerta de confirmacion</button>
+
+  <!-- Cargamos la libreria desde un CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert@2.1.2/dist/sweetalert.min.js"></script>
+
+  <script>
+    // Ejemplo A: swal() con 3 parametros -> titulo, texto, tipo de icono
+    document.getElementById("btnAlertaExito").addEventListener("click", function () {
+      swal("Listo!", "Esta es una alerta de exito con SweetAlert.", "success");
+    });
+
+    // Ejemplo B: swal() con un objeto de opciones, para poder poner
+    // botones personalizados (en este caso "Cancelar" y "Si, borrar")
+    document.getElementById("btnAlertaConfirmar").addEventListener("click", function () {
+      swal({
+        title: "¿Esta seguro?",
+        text: "Esto es solo un ejemplo de confirmacion.",
+        icon: "warning",
+        buttons: ["Cancelar", "Si, borrar"]
+      }).then(function (confirmado) {
+        // swal regresa "true" si el usuario le dio al segundo boton
+        if (confirmado) {
+          swal("Hecho", "Le diste click a confirmar.", "success");
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
