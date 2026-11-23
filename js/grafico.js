@@ -9,11 +9,11 @@ var mensajeSinDatosGrafico = document.getElementById("mensajeSinDatosGrafico");
 
 // Funciones
 
-// Recorre el historial y suma los montos agrupados por tipo
-// de transaccion. Regresa un objeto, por ejemplo:
-// { "Depósito": 500, "Retiro": 100, "Pago de servicio": 60 }
-function calcularSumasPorTipo(historial) {
-  var sumasPorTipo = {
+// Recorre el historial y cuenta CUANTAS transacciones hay de
+// cada tipo (no cuanto dinero, solo la cantidad). Regresa un
+// objeto, por ejemplo: { "Depósito": 3, "Retiro": 1, "Pago de servicio": 2 }
+function calcularConteosPorTipo(historial) {
+  var conteosPorTipo = {
     "Depósito": 0,
     "Retiro": 0,
     "Pago de servicio": 0
@@ -23,24 +23,24 @@ function calcularSumasPorTipo(historial) {
     var transaccion = historial[i];
 
     // Si por algun motivo el tipo no esta en la cajita, lo creo
-    if (sumasPorTipo[transaccion.tipo] === undefined) {
-      sumasPorTipo[transaccion.tipo] = 0;
+    if (conteosPorTipo[transaccion.tipo] === undefined) {
+      conteosPorTipo[transaccion.tipo] = 0;
     }
 
-    sumasPorTipo[transaccion.tipo] = sumasPorTipo[transaccion.tipo] + transaccion.monto;
+    conteosPorTipo[transaccion.tipo] = conteosPorTipo[transaccion.tipo] + 1;
   }
 
-  return sumasPorTipo;
+  return conteosPorTipo;
 }
 
-// Dibuja el grafico de pastel con Chart.js usando las sumas
-// que ya calcule con calcularSumasPorTipo()
-function dibujarGrafico(sumasPorTipo) {
-  var etiquetas = Object.keys(sumasPorTipo);
+// Dibuja el grafico de pastel con Chart.js usando los conteos
+// que ya calcule con calcularConteosPorTipo()
+function dibujarGrafico(conteosPorTipo) {
+  var etiquetas = Object.keys(conteosPorTipo);
   var valores = [];
 
   for (var j = 0; j < etiquetas.length; j++) {
-    valores.push(sumasPorTipo[etiquetas[j]]);
+    valores.push(conteosPorTipo[etiquetas[j]]);
   }
 
   var contexto = canvasGrafico.getContext("2d");
@@ -50,7 +50,7 @@ function dibujarGrafico(sumasPorTipo) {
     data: {
       labels: etiquetas,
       datasets: [{
-        label: "Monto por tipo de transacción",
+        label: "Número de transacciones por tipo",
         data: valores,
         backgroundColor: [
           "#27ae60", // verde para deposito
@@ -64,6 +64,15 @@ function dibujarGrafico(sumasPorTipo) {
       plugins: {
         legend: {
           position: "bottom"
+        },
+        tooltip: {
+          callbacks: {
+            // Para que en el tooltip se vea "3 transacciones" en
+            // vez de solo el numero suelto
+            label: function (contexto) {
+              return contexto.label + ": " + contexto.parsed + " transacciones";
+            }
+          }
         }
       }
     }
@@ -80,6 +89,6 @@ if (historial.length === 0) {
   mensajeSinDatosGrafico.style.display = "block";
   canvasGrafico.style.display = "none";
 } else {
-  var sumasPorTipo = calcularSumasPorTipo(historial);
-  dibujarGrafico(sumasPorTipo);
+  var conteosPorTipo = calcularConteosPorTipo(historial);
+  dibujarGrafico(conteosPorTipo);
 }

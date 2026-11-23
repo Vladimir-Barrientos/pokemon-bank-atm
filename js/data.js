@@ -79,6 +79,38 @@ function agregarTransaccion(tipo, monto, descripcion) {
 
   // Guardo el arreglo actualizado otra vez en localStorage
   localStorage.setItem("historial", JSON.stringify(historial));
+
+  // Regreso la transaccion creada por si quien llamo esta funcion
+  // necesita generar un comprobante con sus datos
+  return nuevaTransaccion;
+}
+
+// Genera y descarga un comprobante en PDF de UNA sola
+// transaccion (la que se acaba de realizar). La uso en
+// acciones.js justo despues de depositar, retirar o pagar.
+// Necesita que la pagina tenga cargada la libreria jsPDF.
+function generarComprobantePDF(transaccion) {
+  var jsPDF = window.jspdf.jsPDF;
+  var doc = new jsPDF();
+
+  doc.setFontSize(16);
+  doc.text("Pokémon Bank - Comprobante de transacción", 10, 15);
+
+  doc.setFontSize(11);
+  doc.text("Cliente: " + USUARIO_PRUEBA.nombre, 10, 28);
+  doc.text("Cuenta: " + USUARIO_PRUEBA.numeroCuenta, 10, 35);
+  doc.text("Fecha: " + transaccion.fecha, 10, 42);
+
+  doc.line(10, 48, 200, 48);
+
+  doc.text("Tipo de transacción: " + transaccion.tipo, 10, 58);
+  doc.text("Descripción: " + transaccion.descripcion, 10, 65);
+  doc.text("Monto: " + formatearMoneda(transaccion.monto), 10, 72);
+  doc.text("Saldo disponible después de la transacción: " + formatearMoneda(obtenerSaldo()), 10, 79);
+
+  // Nombre de archivo unico usando la fecha/hora, para que no se
+  // sobreescriba el comprobante anterior si descarga varios
+  doc.save("comprobante-" + Date.now() + ".pdf");
 }
 
 // Funcion para dar formato a dinero

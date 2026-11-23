@@ -22,6 +22,15 @@ function limpiarCaracteresNoNumericos() {
   inputPin.value = inputPin.value.replace(/[^0-9]/g, "");
 }
 
+// Reglas de ValidateJS para el campo del PIN
+var reglasPin = {
+  pin: {
+    presence: { allowEmpty: false, message: "no puede estar vacío" },
+    length: { is: 4, message: "debe tener exactamente 4 números" },
+    numericality: { onlyInteger: true, message: "debe ser solo números" }
+  }
+};
+
 // Se ejecuta cuando el usuario envia el formulario de login
 function manejarEnvioDeLogin(evento) {
   // Esto evita que la pagina se recargue sola (comportamiento
@@ -30,8 +39,11 @@ function manejarEnvioDeLogin(evento) {
 
   var pinEscrito = inputPin.value;
 
-  // Validacion simple: tiene que tener exactamente 4 numeros
-  if (pinEscrito.length !== 4) {
+  // Valido el formato del PIN con ValidateJS en vez de hacerlo
+  // a mano. validate() regresa "undefined" si todo esta bien.
+  var errores = validate({ pin: pinEscrito }, reglasPin);
+
+  if (errores) {
     mensajeError.style.display = "block";
     return;
   } else {

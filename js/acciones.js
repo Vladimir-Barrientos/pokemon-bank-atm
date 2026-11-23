@@ -32,6 +32,43 @@ var btnSalir = document.getElementById("btnSalir");
 
 // Funciones
 
+// Reglas de ValidateJS para validar que un monto sea un numero
+// mayor que cero. La reuso en deposito, retiro y pago.
+var reglasMonto = {
+  monto: {
+    presence: { allowEmpty: false, message: "no puede estar vacío" },
+    numericality: { greaterThan: 0, message: "debe ser mayor a 0" }
+  }
+};
+
+// Revisa un monto con ValidateJS. Si esta mal, muestra el error
+// con SweetAlert y regresa false. Si esta bien, regresa true.
+function montoEsValido(monto) {
+  var errores = validate({ monto: monto }, reglasMonto);
+
+  if (errores) {
+    swal("Error", "Monto inválido: " + errores.monto[0], "error");
+    return false;
+  }
+
+  return true;
+}
+
+// Despues de una transaccion exitosa, pregunto con SweetAlert si
+// quiere descargar el comprobante en PDF de esa transaccion
+function ofrecerComprobante(titulo, mensaje, transaccion) {
+  swal({
+    title: titulo,
+    text: mensaje,
+    icon: "success",
+    buttons: ["Cerrar", "Descargar comprobante"]
+  }).then(function (quiereComprobante) {
+    if (quiereComprobante) {
+      generarComprobantePDF(transaccion);
+    }
+  });
+}
+
 // Lee el saldo guardado y lo escribe en pantalla con formato
 // de dinero (ej. $5,000.00). La uso varias veces, por eso
 // la hice funcion aparte en vez de repetir el codigo
@@ -51,9 +88,8 @@ function manejarConfirmarDeposito() {
   // Tomo el valor escrito y lo paso a numero decimal
   var monto = parseFloat(inputMontoDeposito.value);
 
-  // Validacion: tiene que ser un numero y mayor que cero
-  if (isNaN(monto) || monto <= 0) {
-    swal("Error", "Escriba un monto válido mayor a 0.", "error");
+  // Valido el monto con ValidateJS (numero y mayor que cero)
+  if (!montoEsValido(monto)) {
     return;
   }
 
@@ -62,7 +98,7 @@ function manejarConfirmarDeposito() {
   guardarSaldo(saldoNuevo);
 
   // Guardo la transaccion en el historial
-  agregarTransaccion("Depósito", monto, "Depósito en efectivo");
+  var transaccion = agregarTransaccion("Depósito", monto, "Depósito en efectivo");
 
   // Actualizo lo que se ve en pantalla
   actualizarSaldoEnPantalla();
@@ -71,15 +107,14 @@ function manejarConfirmarDeposito() {
   $("#modalDeposito").modal("hide");
   inputMontoDeposito.value = "";
 
-  swal("Depósito exitoso", "Se depositó " + formatearMoneda(monto), "success");
+  ofrecerComprobante("Depósito exitoso", "Se depositó " + formatearMoneda(monto), transaccion);
 }
 
 // BOTON: Confirmar Retiro
 function manejarConfirmarRetiro() {
   var monto = parseFloat(inputMontoRetiro.value);
 
-  if (isNaN(monto) || monto <= 0) {
-    swal("Error", "Escriba un monto válido mayor a 0.", "error");
+  if (!montoEsValido(monto)) {
     return;
   }
 
@@ -94,14 +129,14 @@ function manejarConfirmarRetiro() {
   var saldoNuevo = saldoDisponible - monto;
   guardarSaldo(saldoNuevo);
 
-  agregarTransaccion("Retiro", monto, "Retiro en efectivo");
+  var transaccion = agregarTransaccion("Retiro", monto, "Retiro en efectivo");
 
   actualizarSaldoEnPantalla();
 
   $("#modalRetiro").modal("hide");
   inputMontoRetiro.value = "";
 
-  swal("Retiro exitoso", "Se retiró " + formatearMoneda(monto), "success");
+  ofrecerComprobante("Retiro exitoso", "Se retiró " + formatearMoneda(monto), transaccion);
 }
 
 // BOTON: Confirmar Pago de servicio
@@ -109,8 +144,7 @@ function manejarConfirmarPago() {
   var servicioElegido = selectTipoServicio.value;
   var monto = parseFloat(inputMontoPago.value);
 
-  if (isNaN(monto) || monto <= 0) {
-    swal("Error", "Escriba un monto válido mayor a 0.", "error");
+  if (!montoEsValido(monto)) {
     return;
   }
 
@@ -126,14 +160,14 @@ function manejarConfirmarPago() {
 
   // Aqui guardo el tipo de servicio dentro de la descripcion
   // para que luego en el grafico se pueda agrupar bien
-  agregarTransaccion("Pago de servicio", monto, servicioElegido);
+  var transaccion = agregarTransaccion("Pago de servicio", monto, servicioElegido);
 
   actualizarSaldoEnPantalla();
 
   $("#modalPago").modal("hide");
   inputMontoPago.value = "";
 
-  swal("Pago exitoso", "Se pagó " + formatearMoneda(monto) + " de " + servicioElegido, "success");
+  ofrecerComprobante("Pago exitoso", "Se pagó " + formatearMoneda(monto) + " de " + servicioElegido, transaccion);
 }
 
 // BOTON: Salir (cerrar sesion)
